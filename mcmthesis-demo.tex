@@ -1,0 +1,883 @@
+%%
+%% This is file `mcmthesis-demo.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% mcmthesis.dtx  (with options: `demo')
+%%
+%% -----------------------------------
+%%
+%% This is a generated file.
+%%
+%% Copyright (C)
+%%       2010 -- 2015 by Zhaoli Wang
+%%       2014 -- 2019 by Liam Huang
+%%       2019 -- present by latexstudio.net
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainer of this work is Liam Huang.
+%%
+%%
+%% This is file `mcmthesis-demo.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% mcmthesis.dtx  (with options: `demo')
+%%
+%% -----------------------------------
+%%
+%% This is a generated file.
+%%
+%% Copyright (C)
+%%       2010 -- 2015 by Zhaoli Wang
+%%       2014 -- 2019 by Liam Huang
+%%       2019 -- present by latexstudio.net
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainer of this work is Liam Huang.
+%%
+\documentclass{mcmthesis}
+\mcmsetup{CTeX = false,   % 使用 CTeX 套装时，设置为 true
+        tcn = 2200289, problem = A,
+        sheet = true, titleinsheet = true, keywordsinsheet = true,
+        titlepage = false, abstract = true}
+\usepackage{newtxtext}%\usepackage{palatino}
+\usepackage{lipsum}
+\usepackage{graphicx} 
+\usepackage{subfigure}
+\newcommand{\upcite}[1]{\textsuperscript{\textsuperscript{\cite{#1}}}}
+\title{Game Theory in Cycling}
+\date{}
+\begin{document}
+\begin{abstract}
+	
+The rider's strategy has a huge impact on the outcome of the race. In this article, we analyze the physiological and dynamic model of the rider's power output, on the basis of which we obtain the optimal power output strategy over the entire course using Simulated Annealing Algorithm. We then conduct sensitivity analysis of possible influential factors. We extend our model to Team time trial.
+
+In Model 1, we establish a model describing the rider's power limit and physical strength based on physiology. By fitting the data in the literature, we obtain the quantitative parameters of rider's physical ability. Then a model describing the relation between power output and duration is established and utilized to give power profiles of three different types of riders.
+
+In model 2, the courses are divided into 1164 sections. We first conduct analysis of power output, dynamic model and weather condition to quantitatively solve for energy and speed variation and time for each section of the course. We use Simulated Annealing Algorithm to optimize the power distribution over the course with the optimization objective of reducing the total race time. We then apply the model to two realistic courses and one self-designed course and give the optimal power distributions accordingly. All the results are properly explained.
+
+In sensitivity analysis, we first examine the influence of wind speed and wind direction on results in Model 2 by changing the two parameters in two different types of courses. And we find that the closer the course gets to the circle ,the less sensitive our model is to weather conditions.
+
+When analyzing the sensitivity of the optimized results of the model to the deviations of cyclists' power distribution, We find that the total time is positively correlated with the variance of disturbance and is fairly sensitive to it. Then we conduct sensitivity analysis on each road section in turn to determine which road sections are the key parts and inversely solve for the possible range of expected split times at key parts.
+
+In the Extension part, we first study the simplified situation to consider the team as a whole. We establish a model to describe the aerodynamic drag on each rider in all permutations. We then study the complex model that applies the strategy of sacrificing two wind breakers at certain point. Based on Model 2, we change the objective function and add the dropping point as a decision variable to extend our model to TTT.
+
+Finally, we give a racing guidance for a certain course to introduce our model and demonstrate how to use it.
+
+
+
+\begin{keywords}
+Physiology; Dynamics; Simulated Annealing Algorithm; 
+\end{keywords}
+\end{abstract}
+\maketitle
+\tableofcontents
+\newpage
+%% Generate the Table of Contents, if it's needed.
+%% \tableofcontents
+%% \newpage
+%%
+%% Generate the Memorandum, if it's needed.
+%% \memoto{\LaTeX{}studio}
+%% \memofrom{Liam Huang}
+%% \memosubject{Happy \TeX{}ing!}
+%% \memodate{\today}
+%% \logo{\LARGE I'm pretending to be a LOGO!}
+%% \begin{memo}[Memorandum]
+%%   \lipsum[1-3]
+%% \end{memo}
+%%
+	\section{Introduction}
+\subsection{Problem Background}
+
+Cycling is one of the most popular modern competitive sports. The three types of bicycle road races are criterium, team time trial, and individual time trial. During the cycling races，many factors affect the outcome, including ability of the player, weather conditions, the course and the strategy. Therefore, the importance of scientific strategy based on the specific player and course is more appreciable in cycling, compared with sports that mostly require high explosive power of players.
+
+Different types of athletes have different physical characteristics, reflected in not only the capacity to generate much power, but how long the power can endure. Athletes with high explosive power but short of endurance tend not to achieve the best and vice versa. Mathematically modeling physical changes of athletes in the movement can help coaches to develop the optimal strategy, in order to minimize the time of covering the course for a given physical ability of the player. Scientific competition strategies can not only help top athletes break records, but make sense for cycling enthusiasts to make individual plans and save energy as well.
+
+
+
+
+\subsection{Restatement of the Problem}
+
+Considering the background information and restricted conditions identified in the problem statement, we need to establish a model that is universal in its applicability to different athletes and complete the following tasks using the model: 
+\begin{itemize}
+	\item Give the definition of the power profiles of two typical riders of different gender.
+	\item Apply your model to various time trial courses.
+	\item Study the influence of weather conditions on the model and conduct sensitivity analysis on it.
+	\item Study the influence of rider deviations from the strategy and conduct sensitivity analysis on it.
+	\item Extend the model to the optimal strategy for a team time trial of six members per team.
+	\item Design a two-page cycling guidance for a Directeur Sportif including an outline of dierctions and a summary of the model.
+\end{itemize}
+
+%\subsection{Literature Review}
+
+%Since the last century, optimization of strategy in cycling by establishing mathemtcial model has been the focus of many scholars in different fields. They have conducted a large quantity of experiments and put forward many models of athletic performances. 
+
+%{\bf Descriptive models: } Several descriptive models derived from empirical researches have been proposed. Kennelly proposed a power-law model (1906). Asymptotic hyperbolic models were proposed and discussed by Hill(1927) and Scherrer(1954). Péronnet and Thibault proposed a logarithmic model(1987). 3-parameter asymptotic models were proposed and studied by Hopkins(1989) and Morton(1996). 
+
+%{\bf Physiological models: } Péronnet and Thibault included fatigue, power, the anaerobic and aerobic metabolisms in their model. This is the most used physiologyical model so far.
+
+
+
+\subsection{Our Work}
+
+The problem requires us to mathematically model the power of riders and design the optimal racing strategy with our model. Therefore, our Work includes the following:
+\newpage
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=15cm]{Our Work.jpg}
+	\caption{Structure of Our Work} 
+\end{figure}
+
+
+
+
+
+
+\section{Assuptions and Justifications}
+
+Assumptions are made as follows to simplify the problem. Each of them is properly justified.
+
+\begin{itemize}
+	\item {\bf Assumption1: The rider's stamina recovers all the time and the recovery rate is a constant.}\\
+	{\bf Justification:} Recovery rate is the measure of aerobic capacity that is related to the athlete's recovery ability. For the same athlete, recovery rate can be regarded as constant during the whole competition.
+	
+	\item {\bf Assumption2: The maximum instantaneous power that the rider can output is related to the body's remaining energy. }\\
+	{\bf Justification:} The human body can burst out the maximum power when energy is not consumed yet, and can not produce a lot of power when the energy is exhausted. It is reasonable to assume that the rider's remaining energy determines the upper limit of performance.
+	
+	\item {\bf Assumption3: The wind direction is parallel to the direction of movement of the rider.} \\
+	{\bf Justification:} According to Fluid Dynamics, when air hits an obstacle at a certain speed, the airflow will go along its surface, going parallel with the direction of rider's movement, not to mention that in racing courses, the slant angle is fairly small(<22 degree). Besides, accurate simulation of air stream is hard to conduct due to the complex topography and that is not the focus of our study.
+	
+	\item {\bf Assumption4: Every member in the team has the same physical ability.} \\
+	{\bf Justification:} In practice, small differences in physical ability between athletes are inevitable and it is not feasible to consider them in the mathematical model. Therefore, to simplify the problem and to facilitate modeling, we consider that each athlete in a team game has the same power profile.
+	
+	\item {\bf Assumption5: The formation change of the cycling team is done in an instant.}\\
+	{\bf Justification:} It only takes seconds for riders to complete the formation change, during which the energy consumption is negligible compared to that of the entire match.
+	
+	\item {\bf Assumption6: In the team time trial, riders maintain a constant safe distance between each other.} \\
+	{\bf Justification:} In order to minimize wind resistance while ensuring safety, a safe distance between riders should be maintained. Considering the techniques of professional cyclists and a very small number of severe acceleration and deceleration sections, we assume that the cyclist can maintain the distance almost all the time.
+	
+	\item {\bf Assumption7: The data in this research is accurate.} \\
+	{\bf Justification:} We assume the data we collect of cyclists is accurate so that we can base a reasonable mathematical model on it.
+	
+\end{itemize}
+
+
+
+
+
+
+\section{The Data}
+
+The data we collect includes the course information, performance and physical data of several groups of cycling athletes, and kinetic parameters of the rider. %The data sources are listed in Table2.
+%\begin{table}[h]  %h表示固定在当前位置
+%	\centering        %设置居中
+%	\caption{Database}  %表标题
+%	\vspace{0.15cm}
+%	\label{tab2}                       %设置表的引用标签
+%	\begin{tabular}{|c|c|c|}  %3个c表示3列, |可选, 表示绘制各列间的竖线
+%		\hline                    %画横线
+%		Data Sources & Data Type     \\ \hline  %各列间用&隔开
+%		https://olympics.com/olympic-games/tokyo-2020&Topographic Map\\ \hline
+%		https://www.flanders2021.com&Topographic Map\\ \hline
+%		https://www.webofscience.com&Academic Paper\\ \hline
+%	\end{tabular}
+%\end{table}
+
+We collected topographic maps of the 2021 Olympic Time Trial course and the 2021 UCI World Championship time trial course. We use Python to process the image file of the track to get the slope of the course in every section, as shown in the figure.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=8cm]{olympic.jpg}
+	\caption{Topographic map of the  2021 Olympic Time Trial course} 
+\end{figure}
+Taking the 2021 Olympic Time Trial course as an example, we read pixel points via python and divided the track into more than a thousand nodes so we can obtain the lateral and vertical distances of each one for further study.
+
+
+\section{Notations}
+
+Notations are shown in Table1.
+\newpage
+
+\begin{table}[h]
+	\begin{center}
+		\caption{Notations}
+		\begin{tabular}{ccc}
+			\hline
+			\makebox[0.3\textwidth][c]{Symbol}	&  \makebox[0.4\textwidth][c]{Description} &
+			\makebox[0.3\textwidth][c]{Unit}\\ \hline
+			$P$&Instantaneous power&$W$\\
+			$P_c$&Critical power of aerobic exercise&$W$\\
+			$w$&Anaerobic energy&$J$\\
+			$AWC$&Anaerobic Work Capacity&$J$\\
+			$T$&Duration at power of $P$&$s$\\
+			$P_{lim}$&Power limit of the rider &$W$\\
+			$\alpha$&Coefficient of $w$ in $P_{lim}$&$s^{-1}$\\
+			$\rho$&Air density&$kg/m^3$\\
+			$S_{eff}$&Effective windward area&$m^2$\\
+			$v$&Velocity of the rider&$m/s$\\
+			$v_w$&Velocity of wind&$m/s$\\
+			$v_r$&Relative velocity of the rider and wind&$m/s$\\
+			$\phi$&Included angle between the direction of $v$ and $v_w$&$rad$\\
+			$P_{eff}$&Effetive power of driving force&$W$\\
+			$\lambda$&Conversion efficiency of the rider's power output&\\
+			$\mu$&Effective friction coefficient&\\
+			$\mu_s$&Static friction coefficient&\\
+			$F_N$&Normal force between the tires and the ground&$N$\\
+			$E_p$&Potential energy&$J$\\
+			$E_k$&Kinetic energy&$J$\\
+			$m$&Total mass of the rider and bicycle&$kg$\\
+			$\theta$&Tilt angle of the slope&$rad$\\
+			$s$&The distance the rider covers from start point&$m$\\
+			$R$&The radius of curvature&m\\
+			$v_{safe}$&Safe speed&$m/s$\\
+			$f_{\tau}$&Tangential friction&$N$\\
+			$f_n$&Normal friction&$N$\\
+			\hline
+		\end{tabular}
+	\end{center}
+\end{table}
+
+
+
+\section{Analysis and Modeling}
+\subsection{Model \uppercase\expandafter{\romannumeral1}: Power Output and Recovery}
+
+\subsubsection{Power Curve}
+\qquad
+According to Physiology\upcite{8}, the body has two working states: aerobic exercise and anaerobic exercise. During aerobic exercise, the body expends energy from ATP produced by the aerobic system, the glycogen-lactic acid system, and the phosphorus system. Although aerobic breathing can continuously generate energy during exercise, its power is limited. When the required power exceeds the power limit of aerobic exercis, which is defined as the critical power $P_c$, the body will expend energy from anaerobic energy sources. However, there is limit on the total amount of anaerobic energy that the body can utilize while continuously working above the critical power. The amount of energy used to measure the endurance capacity is called Anaerobic Work Capacity(AWC).
+
+Aerobic exercise can last indefinitely, as long as the power output is below the critical power. Nevertheless anaerobic exercise can endure only a limited time and then enters the recovery phase when the rider works below the critical power to regain enough anaerobic energy. Therefore, we divide a rider's movement phase into the recovery phase(aerobic exercise) and working phase(anaerobic exercise), and conduct the following analysis on this basis.
+
+We define $P$ as the instantaneous power and $w$ as the anaerobic energy. During the working phase, the variation rate of anaerobic energy $\frac{dw}{dt}$ is the difference between the critical power and the instantaneous power:
+\begin{equation}
+	\frac{dw}{dt}=P_c-P
+\end{equation}
+
+According to the work of Morton,R.H. and Billat,L.V.$^{[13]}$, during the recovery phase, this relation is still effective, but the value of $\frac{dw}{dt}$ is positive.
+
+
+Now we try to determine a power curve that shows the rider's ability to maintain certain level of power output continuously by giving the P-T function, where P is the given power and T is the time it can last.
+
+Consider a process with a constant power of $P$. The rate of energy consumption in anaerobic respiration is the difference between instantaneous power and critical power:
+\begin{equation}
+	w(t)=w(0)-(P-P_c)t
+\end{equation}
+
+Assume that rider can make full use of the remaining $AWC$, When $t=T$, $w(T)=0$，so we can obtain the equation:
+\begin{equation}
+	P=P_c+\frac{w(0)}{T}
+\end{equation}
+
+When T tends to 0, P tends to infinity. Under this assumption, the rider will have an infinite burst of power, which is unreasonable. Therefore, we define the existence of an upper limit of power output for the rider.
+
+Let the upper limit of instantaneous power be $P_{lim}$. According to literature, the ability to do work is negatively correlated with anaerobic energy, with P decreasing as anaerobic exercise proceeds. Therefore, the coefficient $alpha$ is introduced to describe the relationship between maximum power and anaerobic energy:
+\begin{equation}
+	P_{lim}=\alpha w(0)+P_c
+\end{equation}
+Under this assumption, $P_m=\alpha AWS+P_c$ is a finite value when T=0, which is in line with the actual situation.
+
+When the rider first enters the working phase, $P_ {lim} > P$, until it reaches a critical state at $t=T$. When $t>T$,$P_{lim}<P$, the power cannot be maintained. Based on this analysis, we can get $T$, let $P=P_{lim}$,$t=T$, $w(0)=AWC$:
+\begin{equation}
+	P=\alpha [AWC-(P-P_c)T]+P_c
+\end{equation}
+solve for the relation between $P$ and $T$:
+\begin{equation}
+	P=\frac{\alpha AWC+\alpha P_c T+P_c}{1+\alpha T}
+\end{equation}
+
+For a given rider, the power curve can be obtained by measuring the parameters $AWC$, $\alpha$, $P_c$. Based on the physiological data of athletes in the paper by J. Pinot, F. Grappe (2011), the most fitted results are obtained by fitting the equations in the model, which are $\alpha=0.0399 s^{-1}$, $P_c=354.5 W$, $AWC=24010.41 J$. The fitted curve is shown in the figure:
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=16cm]{Power Curve.jpg}
+	\caption{The fitted power curve} 
+\end{figure}
+
+The fitted Power-Duration function is:
+\begin{equation}
+	P(T)=\frac{316.4T+32880}{T+25.02}
+\end{equation}
+where the unit of P is Watt and the unit of T is second.
+
+
+
+
+\subsubsection{Power Profiles of Three Typical Riders}
+
+\qquad
+	Next, we consider the power curve of different types of riders. According to literature data, the time trial specialists have critical power(380.2$W$) and AWC(26143$J$) that are beyond the norm, which allows the rider to have a stronger endurance and the ability to cope with a variety of complex terrain; And the sprinter's $alpha$ value(0.043) far exceeds the average of the cyclists, which means the $P_{lim}$ is fairly large and he has a surprisingly explosive power; Relatively speaking, the critical power, AWC and $\alpha$ of female riders are smaller than those of male riders, which are 321.3$W$,22189$J$ and 0.035.The figure shows the power curves of three different types of riders.
+\newpage
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=10cm]{PP.jpg}
+	\caption{Power Curves of Three Typical Riders} 
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+\subsection{Model \uppercase\expandafter{\romannumeral2}: Optimal Power Distribution}
+
+\subsubsection{Power and Energy Analysis}
+\qquad
+In the Model \uppercase\expandafter{\romannumeral1}, there is an upper limit to the output power during riding, represented as $P_{lim}=\alpha w+P_c$. However, in actual situation, riders can exceed the limit for better grades. 
+
+According to Physiology and requirements of the problem, exceeding the upper limit creates an additional burden on the rider, that is, the maximum power of the rider will be reduced accordingly. In order to describe the effect of this excess power on the stamina of the rider, we define $W_{ex}$ as the work that the rider does above the power limit. The extra work done by the cyclist breaking through the limit causes a attenuation of the coefficient $\alpha$, which later affects his anaerobic exercise ability:
+
+\begin{equation}
+	\alpha (W_{ex})=\alpha(0)-0.00001\alpha W_{ex}
+\end{equation}
+where the unit of $W_{ex}$ is $J$.
+
+
+
+\subsubsection{Weather Condition Analysis}
+\qquad
+The weather condition in a cycling race is wind condition, including the velocity and direciton of wind. To simplify the calculation, we consider the wind speed and direction constant in this model.
+
+Let the aerodynamic drag be $F_{air}$. Note that $F_{air}$ does not necessarily Obstructing rider's progress. For instance, the wind may play an accelerating role when its direction is the same as the velocity of the rider's movement. To describe the direction of this force, we use vector analysis. Define $v$ as the velocity of the rider and $v_w$ as the velocity of wind. According to Aerodynamics\upcite{4,6}, the wind resistance can be expressed as:
+\begin{equation}
+	\vec{F}=-\frac{1}{2}\rho {|\vec{v_r}|}^2 C_D A\cdot \frac{\vec{v_r}}{|\vec{v_r}|}
+\end{equation}
+where $\rho$ is the air density and $v_r$ represents the relative velocity of the rider and wind. $C_D$ and $A$ represent the coefficient of drag and frontal area of the rider and bicycle. Define $S_{eff}$ as $C_DA$ to simplify the expression.
+
+To quantify the vector expressions, we establish a plane right angle coordinate system, with east as the x-positive direction and north as the y-positive direction. Let the azimuth of wind speed $\vec{v_w}$ be $\phi$ and the azimuth of motion direction be $\gamma$. Then list the expressions:
+
+\begin{equation}
+	\begin{cases} 	
+		\vec{v_w}=|\vec{v_w}|(\cos\phi,\sin\phi)\\
+		\vec{v}=|\vec{v}|(\cos\gamma,\sin\gamma)\\
+		\vec{v_r}=\vec{v}-\vec{v_w}=(v\cos\gamma-v_w\cos\phi,v\sin\gamma-v_w\sin\phi)
+	\end{cases}
+\end{equation}
+
+
+The wind resistance only affects the rider in the tangential direction, and the tangential force of the wind on the rider is set to $F_{air}$, then the effective force of the wind on the rider is:
+\begin{equation}
+	F_{air}=-\frac{1}{2}\rho {|\vec{v_r}|}^2  S_{eff}\cdot \frac{\vec{v_r}}{|\vec{v_r}|}\cdot \frac{\vec{v}}{|\vec{v}|}
+\end{equation}
+When $F_{air}>0$, the wind exerts a drag effect on the rider; when $F_{air}<0$ the wind exerts a thrust effect.
+
+
+\subsubsection{Dynamic Analysis}
+Consider the rider and bicycle as a whole. As shown in the figure, the forces on this whole are effective driving force of the rider $F_{drive}$, aerodynamic drag $F_{air}$, internal and external friction. They account for changes in kinetic and potential energy. The force analysis is displayed below. Note that in the schematic, $F_{drive}$ is a hypothetical equivalent driving force and $F_{eff}$ is an effective frictional force.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=7cm]{Force.jpg}
+	\caption{Force analysis} 
+\end{figure}
+
+Define effective output power as $P_{eff}=\lambda P$, where $\lambda$ is the coefficient describing how much the power of the rider can be utilized in driving the bicycle. According to energy change constraints, we can list a equation as below:
+\begin{equation}
+	P_{eff}-\frac{1}{2}\rho v_r^2  S_{eff}\cdot v-\mu F_N\cdot v-\frac{\Delta E_p}{\Delta t}-\frac{\Delta E_k}{\Delta t}=0
+\end{equation}
+where $\mu$ is the effective coefficient of friction, $F_N$ represents the nromal force applied on the tire, $E_p$ represents the potential energy and $E_k$ represents the kinetic energy.
+
+For a given course, the distance is divided into a large quantity of sections(in our model there are 1164 sections). 
+
+Suppose each section is a slope with the same slant angle $\theta_i$, with $\theta >0$ for uphill and $\theta <0$ for downhill; meanwhile, we use equidistant segments, each with the same distance in the horizontal direction. The velocity of the $i$th segment is denoted as $v_i$, and the relation can be obtained:
+\begin{equation}
+	\begin{cases} 	\frac{\Delta E_p}{\Delta t}=mg\sin\theta\\
+		\frac{\Delta E_k}{\Delta t}=mv\frac{\Delta v}{\Delta t}\\
+		F_N=mg\cos\theta
+	\end{cases}
+\end{equation}
+where $m$ is the total weight of the rider and bicycle and $g$ is the gravitational acceleration.
+
+Combine equations (12) and (13) and substitute effective power, and we can obtain the equation:
+\begin{equation}
+	\frac{\Delta v}{\Delta t}=\frac{\lambda P_i}{mv_i}-g\sin\theta_i-\mu g\cos\theta_i-\frac{\rho v_r^2 S_{eff}}{2m}
+\end{equation}
+
+Based on the data in the paper by JAMES C. MARTIN (2006), we set $\lambda=97.7\%$,$\mu=0.0025$. Riders in different position have different effective frontal area. For riders in a standing position(working phase), $S_{eff}=0.304m^2$; For riders in a seated position(recovery phase), $S_{eff}=0.245m^2$; the air density is calculated as $1.205kg/m^3$ at 293.15K,1 atm. 
+
+Substituting the data into equation (14), we can get a relation of $v$ and $t$ in the following form:
+\begin{equation}
+	\frac{dv}{dt}=\frac{a}{v}+bv^2+c
+\end{equation}
+where the value of a, b, c is known. An algebraic deformation of equation (15) is done to obtain the following differential equation:
+\begin{equation}
+	\frac{dv}{ds}\frac{ds}{dt}=\frac{dv}{ds}v=\frac{a}{v}+bv^2+c
+\end{equation}
+where $s$ refers to the distance the rider has already covered from the start point. This is a differential equation of $v$ and $s$, and the boundary condition is $s=S_i, v=v_i$. By solving this differential equation, we can obtain $v$ as a function of $s$, for a divided section i, the distance $S_{i+1}$ of the ith node is known, and the numerical solution of $v_{i+1}$ is obtained by substituting $s=S_{i+1}$.
+
+We can now solve for $v_{i+1}$. And by numerical integration of the differential equation, we can get the equation:
+\begin{equation}
+	\int_{0}^{t_i} dt=\int_{v_i}^{v_{i+1}} \frac{dv}{\frac{a}{v}+bv^2+c}
+\end{equation}
+so that we can solve for the time $t_i$ of section i. Based on this, we can obtain the total time of the race $T_{total}=\sum_{1}^{1164}t_i$.
+
+The above discussion is valid for any terrain in the course. For a turn in the course, the motion of the rider during the corner can be approximated as a circular motion. The frictional forces on the tires are exerted in tangential and normal directions. The tangential frictional force $f_{tau}$ is the drag force discussed above, while the normal frictional force $f_n$ is the centripetal force that maintains the circular motion (the normal component of the wind resistance is negligible with respect to the frictional force).
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=9cm]{Turn.jpg}
+	\caption{Analysis of sharp turns} 
+\end{figure}
+
+List the kinetic equations of circular motion:
+\begin{equation}
+	f_n=m\frac{v^2}{R}
+\end{equation}
+where $v$ is the velocity of the bike and $R$ is the radius of curvature at the curve . We have divided the course into 1164 sections. For each section with a slant angle $\theta_i$ and a cross-sectional radius $r_i$, it is can be approximated as an isometric spiral. The equivalent radius of curvature of the helix is:
+\begin{equation}
+	R_i=r\sqrt{1+\tan^2\theta_i}
+\end{equation}
+
+There exists a maximum value of friction between the ground and the tire, i.e., the static friction $\mu_s mg$, where ${\mu}_s$ is the coefficient of static friction between the tire and the ground. For the sake of safety, we specify that the bicycle must not skid during cornering:
+\begin{equation}
+	f_{total}=\sqrt{f_n^2+f_{\tau}^2}\leq \mu_s mg
+\end{equation}
+
+Combining equation (17)(19), the upper limit $v_{i,safe}$ of the velocity of the i-th segment is obtained
+\begin{equation}
+	v_i\leq v_{safe}=\sqrt[4]{(\mu_s gR_i)^2-(\frac{f_{i,\tau }R_i}{m})} 
+\end{equation}
+
+
+
+
+\subsubsection{Optimization of Power Distribution}
+
+The optimization of strategy for the rider is essentially a process of finding the best power distribution over all sections where the total time is minimized. In order to get the global optimal solution rather than the local optimal solution, we choose the {\bf Simulated Annealing Algorithm(SA)}. Combining requirements of the problem and common knowledge, in this optimization problem, there are kinetic, velocity, energy and power constraints. The optimization model is expressed as follows:
+\begin{center}
+	min $J=T_{total}=\sum_{1}^{1164}t_i$
+\end{center}
+subject to,
+\begin{equation}
+	\begin{cases} \text{Mathematical model:}&\dot{s}=f(s,P)\\
+		\text{Remaining energy limits:}&0\leq w_i\leq AWC\\
+		\text{Velocity limits:}&0\leq v_i\leq v_{i,safe}\\
+		\text{Total energy limits:}&\int_{0}^{T_{total}}dt \leq E_{lim} 
+	\end{cases}
+\end{equation}
+
+
+
+
+
+After establishing the target function and constraints, details of the simulated annealing algorithm is displayed as follows:
+
+\begin{itemize}
+	\setlength{\itemsep}{0pt}
+	\setlength{\parsep}{0pt}
+	\setlength{\parskip}{0pt}
+	\item  $\boldsymbol{Step0:}$Set the decision variable as $P_i(1\leq i\leq 1164)$, initial solution as $P_i=P_c(1\leq i\leq 1164)$, the parameter describing the progress of the algorithm is temperature $K$. The annealing function is $K_{j+1}=aK_{j}$. Determine the values of the initial temperature and the termination temperature.
+	\item  $\boldsymbol{Step1:}$ Randomly disturb 100 sections in sequence, and the disturbance $\Delta P$ satisfies a normal distribution with mean 0. After each disturbance, we check whether the constraint is satisfied: if the constraint is satisfied, the disturbance is retained; if the constraint is not satisfied, the disturbance is not retained. The diagram of each perturbation is as follows:
+	\begin{figure}[h]
+		\small
+		\centering
+		\includegraphics[width=7cm]{disturb.png}
+		\caption{Single Disturbance} 
+	\end{figure}
+	
+	\item  $\boldsymbol{Step2:}$ After 100 disturbances, the total time spent on the race in this case $f_1$ is calculated and compared with the old solution $f_0$: when the new solution is smaller, the new solution is chosen; when the old solution is smaller, the new solution is chosen probabilistically. The probability of choosing the new solution is:
+	\begin{equation}
+		P=\begin{cases} 	
+			1, f_1<f_0\\
+			e^{-\frac{f_1-f_0}{T}}, f_1>f_0
+		\end{cases}
+	\end{equation}
+	
+	\item
+	After one iteration, the annealing function is used to simulate the decrease of the "temperature" of the system and to determine whether the termination temperature $K_f$ is reached.
+	
+	$\boldsymbol{Step3:}$Repeat step1 and step2 until the "temperature" reaches the termination temperature.
+\end{itemize}
+\begin{figure}[h]
+	\small
+	\centering
+	\includegraphics[width=13cm]{SA.png}
+	\caption{Flow Chart of SA} 
+\end{figure}
+
+
+
+
+\subsection{2021 Olympic Time Trial course}
+
+The course of the Tokyo Olympics is notable for its steep gradient, which requires riders to flexibly adjust the output power to take advantage of the acceleration process of the downhill. First, we assume that a rider has an average physical ability. If he outputs a constant power of $P_c$, the total time he spends completing the race is 6146 s. The simulated annealing algorithm designed by this model redistributes the runner's power over the course to effectively utilize AWC, and the results are as follows.
+
+In terms of time, the runner's performance improved by 29\%. Due to the randomness of the SA algorithm, there is some noise in the power plot line. Therefore, we smooth it as shown in Figure 9.
+ \begin{figure}[h]
+ 	\small
+ 	\centering
+ 	\includegraphics[width=14cm]{fig3.png}
+ 	\caption{Smoothed Power Distribution(course1)} 
+ \end{figure}
+
+The AWC distribution and velocity distribution are shown in Figure 10.
+ \begin{figure}[h]
+ 	\centering
+ 	\subfigure[AWC Distribution(course1)]{\includegraphics[height=5cm,width=7.5cm]{fig4.png}}
+ 	\subfigure[Velocity Distribution(course1)]{\includegraphics[height=5cm,width=7.5cm]{fig5.png}}
+ 	\caption{}
+ \end{figure}
+ 
+It can be seen that several more reasonable strategies are produced under the SA algorithm. One is to alternate between high and low power at smoother terrain to maintain speed while ensuring that excessive energy is not expended before going uphill; the second is to increase power on the uphill and reduce it on the downhill to recover physical energy; and the third is to sprint at full power near the end to expend the remaining physical energy.
+
+ The following figure shows the optimization process curve. And it is obvious that our model has a good performance in optimization.
+ \begin{figure}[h]
+	\small
+	\centering
+	\includegraphics[width=7cm]{fig0.png}
+	\caption{Optimization process curve(course1)} 
+\end{figure}
+
+\subsection{2021 UCI World Championship time trial course}
+
+We will apply the same research method to the UCI course. Since UCI course is relatively flatter, the requirements of power distribution is not as high as in the first course. The strategy is basically to alternate between high and low power. And the performance improvement is not appreciable, for 9\%. 
+
+The power distribution is shown in Figure 12 and optimization process curve is shown in Figure 13.
+\begin{figure}[h]
+	\small
+	\centering
+	\includegraphics[width=10cm]{fig7.png}
+	\caption{Power Distribution(course2)} 
+\end{figure}
+
+%\begin{figure}[h]
+%	\small
+%	\centering
+%	\includegraphics[width=10cm]{fig6.png}
+%	\caption{Optimization process curve(course2)} 
+%\end{figure}
+
+
+
+\subsection{Self-Designed Course}
+
+In our self-designed course, we arrange four sharp turns and one steep slope, with the natural concavity of the terrain obtained by a series of normally distributed points after three spline interpolations, as is shown in Figure 13.
+\begin{figure}[h]
+	\small
+	\centering
+	\includegraphics[width=13cm]{self_designed.jpg}
+	\caption{Route map of self-designed course} 
+\end{figure}
+
+The effect of our algorithm on this course is between the first course and the second, with an improvement of 18\%, compared to constant power driving. The power distribution is shown in Figure 14.
+ \begin{figure}[h]
+	\small
+	\centering
+	\includegraphics[width=12cm]{fig11.png}
+	\caption{Power Distribution(course3)} 
+\end{figure}
+
+It can be seen from the three courses that our mathematical model and the optimization process have a high superiority when the slope is large and the terrain is not flat.
+
+
+
+
+
+
+
+
+
+\section{Sensitivity Analysis}
+\subsection{Weather Conditions}
+We first conduct sensitivity analysis on the weather condition. In model \uppercase\expandafter{\romannumeral2}, We analyze the kinetic mechanism of the aerodynamic drag on the rider and give the effective force $\vec{F_{air}}$ as a function of $\vec{v_r}$ and $\vec{v}$.
+
+To facilitate the modeling, we set the wind speed and wind direction to satisfy the normal distribution with given mathematical expectations. Next, we take the 2021 Olympic Time Trial course (course1) and 2021 UCI World Championship time trial course (course2) as examples to illustrate the effect of different wind directions and magnitudes on the results.
+
+We continue to use the plane coordinate system in Model 2. The azimuth of the wind direction is noted as $\phi$. We first study the situation of fixed wind direction, where $\phi \sim{N(\pi,0.15)}$. The wind speed expectation $Ev_w$ is varied from small to large, and the optimization results at this wind speed are examined as follows(Figure 15).
+ \begin{figure}[h]
+	\centering
+	\subfigure[Analysis on $v_w$(course1) ]{\includegraphics[height=5cm,width=7.5cm]{wind1.png}}
+	\subfigure[Analysis on $v_w$(course2)]{\includegraphics[height=5cm,width=7.5cm]{wind2.png}}
+	\caption{}
+\end{figure}
+
+
+As can be seen from the figure, for course1, with the increase of wind speed expectation, the optimization result of the race performance fluctuates up and down in a small range and does not show a significant correlation with the wind speed. This indicates that when our model is applied to circular courses like course1, its sensitivity to the wind speed is rather weak. For course2, with the increase of wind speed expectation, the optimization result of the race performance has a significant improvement, which is because course2 is generally winding from north to south. Therefore, courses like course2 tend to have a strong sensitivity to wind speed.
+
+
+
+
+Then we fix the expectation of wind velocity $Ev_w$, increasing the expectation of wind direction $E\phi\in(0,2\pi)$. As can be seen from Figure 16, the optimization results of course 1 have small random fluctuations, which shows that in circular courses like course1 , our model is less sensitive to wind direction compared with other types of courses. For course2, there is a significant correlation between the fluctuation of its optimization results and the overall direction of the course (it takes less time downwind, and more time upwind), and the fluctuation is larger, showing that course2 has a strong sensitivity to wind direction.
+
+ \begin{figure}[h]
+	\centering
+	\subfigure[Analysis on $\phi$(course1)]{\includegraphics[height=5cm,width=7.5cm]{wind3.png}}
+	\subfigure[Analysis on $\phi$(course2)]{\includegraphics[height=5cm,width=7.5cm]{wind4.png}}
+	\caption{}
+\end{figure}
+
+
+\subsection{Deviations From Target Power Distribution}
+Taking track 3 as the object, this part will do sensitivity analysis on the deviation degree between the actual power distribution of the rider and the target power distribution. We perform the following operations on the target power distribution of the rider:
+\begin{equation}
+	\begin{cases}
+		P_i^{\prime}=P_{target,i}+\epsilon_i \\
+		\epsilon_i \sim N(0,\epsilon) 
+	\end{cases}
+\end{equation}
+Where $\epsilon$ is the indicator to quantify the actual deviation degree. However, it should be noted that the power distribution $P_i^{\prime}$ after the above operation may not meet the constraints we mentioned above. Therefore, the following operations need to be performed:
+
+$\boldsymbol{(1)}$ When i=1 , $\Omega_1$, namely the range of values of $P_1$ ,is obtained from the initial conditions and constraints 
+\begin{equation}
+	P_{real,1}=\begin{cases}
+		P_1^{\prime}, P_1^{\prime}\in \Omega_1\\
+		max\{\Omega_1\}, P_1^{\prime}>max\{\Omega_1\}\\\
+		min\{\Omega_1\}, P_1^{\prime}<min\{\Omega_1\}
+	\end{cases}
+\end{equation}
+then obtain $t_{real,1}$ and $w_{real,1}$.
+
+$\boldsymbol{(2)}$ When $i=k (2\leq k\leq 1000)$, according to $w_{real,k-1}$ and constraints, we get $\Omega_k$.
+\begin{equation}
+	P_{real,k}=\begin{cases}
+		P_k^{\prime}, P_k^{\prime}\in \Omega_k\\
+		max\{\Omega_k\}, P_k^{\prime}>max\{\Omega_k\}\\
+		min\{\Omega_k\}, P_k^{\prime}<min\{\Omega_k\}
+	\end{cases}
+\end{equation}
+Then we get $t_{real,k}$ and $w_{real,k}$
+
+Sequentially adjust every section to ensure that the power distribution satisfies the constraints. Then calculate $T_{real}=\sum_{1}^{1000} t_{real,i}$. Gradually increase the value of $\epsilon$ and compute the corresponding $\frac{T_{real}}{T_{target}}$, respectively(see Figure 17).
+ \begin{figure}[h]
+	\small
+	\centering
+	\includegraphics[width=8cm]{sen1.jpg}
+	\caption{Sensitivity of the whole model} 
+\end{figure}
+
+As can be seen from the graph, the model is sensitive to the deviation of the rider's power distribution, and as the deviation becomes larger, the overall time spent in the race tends to increase.
+
+This section will first analyze the critical sections.
+The sensitivity of each individual road section will be analyzed in which we will set a 10\% disturbance to the power on it , and the road section with a large sensitivity is understood as the critical road section.
+The analysis steps for the ith road section are as follows.
+
+
+(1) determine $\Omega_i$, namely the range of $P_i$
+	
+(2) $P_i(1)=1.1\cdot P_{target,i}$ $P_{real,i}(1)=max\{Pi(i),max\{\Omega_i\}\}$
+	
+(3) sequentially adjust $P_{real,i+1}(1)$,...,and we get $T_{real}(1)$
+	
+(4) $P_{i}(2)=0.9\cdot P_{target,i}$,$P_{real,i}(2)=min\{Pi(i),min\{\Omega_i\}\}$
+	
+(5) sequentially adjust $P_{real,i+1}(2)$,...,and we get$T_{real}(2)$
+	
+(6) then we get${Bia}_i=(T_{real}(1)+T_{real}(2))/T_{target}$
+
+
+Get the diagram and compare it with the topographic map of the track.
+ \begin{figure}[h]
+	\centering
+	\subfigure[Sensitivity of each sections]{\includegraphics[height=5cm,width=7.5cm]{sen2.png}}
+	\subfigure[Elevation distribution]{\includegraphics[height=5cm,width=7.5cm]{dixing.jpg}}
+	\caption{}
+\end{figure}
+
+
+It is easy to analyze: the uphill section (especially the steep slope) is very sensitive to the degree of deviation; the sensitivity of the sharp turn is in the second place.
+Accordingly, we can consider the steep slope at 11~13km as the key section, and the 100m before and after the three sharp turns as the second key section.
+
+We specify that the deviation in performance caused by the power deviation in the key sections cannot exceed 0.3\%, thus inverse solving for the possible range of expected split times at key parts respectively.
+\begin{itemize}
+	\item $11\sim 13km$ road section passing time range is ($337\sim 401$)s
+	\item $9.9\sim 10.1km$ road section passing time range is ($36.2\sim 45.1$)s
+	\item $19.9\sim 20.1km$ road section passing time range is ($37.4\sim 43.2$)s
+	\item $29.9\sim 30.1km$ raod section passing time range is ($35.1\sim 41.6$)s
+\end{itemize}
+
+
+
+
+
+
+\section{Extend Our Model}
+The dynamics model of Team Time Trial is as follows: a group of cyclists are arranged in a straight line during the running, and the air resistance coefficient of the rear riders is effectively reduced compared with that of the solo riders due to the wind breaking effect of the front riders. Therefore, compared with Individual Team Trial, in Team Time Trial, the Team should choose appropriate strategies to break the wind in turn, which will be the key to improve Team performance.
+
+\subsection{Simplified Situation}
+For the sake of simplicity, let's start with a model that doesn't take into account different responsibilities between players.
+
+According to the literature, in the process of match, the smaller the distance between two bicycles is, the more obvious the effect of wind resistance reduction in the rear row is. However, in order to ensure the safety of riders, a safe distance $d_safe$ should be set between two riders. If the distance is smaller than $d_safe$, there will be a risk of rear-end collision. Ideally, The cyclist can always keep the distance between the two just within a safe distance to make the average wind resistance will be minimal. From this we can assume that the speed and acceleration of cyclists are always the same.The following discussion is based on this.
+
+In a team of six, it's easy to know that there are $6!=720$ permutations. Let the permutations be $A_k (1\leq k\leq 720)$.
+\begin{equation}
+	A_k=\begin{cases}
+		1,\text{if $A_k$ is Chosen}\\
+		0,\text{if $A_k$ is not Chosen}
+	\end{cases}
+\end{equation}
+
+In our model，the course is divided into 1000 sections. In each section, the permutation remains unchanged. 
+
+We used the same dynamic model as Individual Time Trial. But in Team Time Trial, the aerodynamic drag $F_{air}$ differs between riders in different position of the team, since $F_{air}$is a linear function of $v_r^2$. Let it be $F_{air}=Cv_r^2$. Let $A_{ki}$be the permutation k in section i, and the coefficient of the $j$th rider in $k$th permutationis $c_{jk}$, the coefficient of the $j$th rider is:
+\begin{equation}
+	C_{j,i}=[A_{1i},\cdots,A_{720i}][c_{j,1},\cdots,c_{j720}]^\mathrm{T}
+\end{equation}
+
+Using the method in Model \uppercase\expandafter{\romannumeral2},we can get the time $t_i$ for section $i$.
+
+\subsection{Complex Situation}
+Considering the team’s grade is determined by the grade of the fourth rider to cross the line, the coach needs to arrange different duties for riders. The two wind breakers need to do more of the wind breaking in the early part of the race so that the other four can save energy for the sprint in the final sections. Therefore, when to drop the two riders off the team becomes a critical choice.
+
+Let $i_d$be the section where the team drop the wind-breakers.  After section $i_d$, we only need to consider a team of four members, which means there are $4!=24$ permutations. In this situation, the coefficient of the $j$th rider can be represented as:
+\begin{equation}
+	C_{j,i}=[A_{1i},\cdots,A_{24i}][c_{j,1},\cdots,c_{j24}]^\mathrm{T}
+\end{equation}
+
+As with Model \uppercase\expandafter{\romannumeral2}, we still treat it as an optimization problem and use the Simulated Annealing Algorithm. The decision variables are $i_d$, distribution of $P_i$ and $A_i$. And the target function is:
+\begin{center}
+	min J=$\sum_{1}^{i_d}t_i+\sum_{i_d+1}^{1000}t_i$
+\end{center}
+
+Due to the large number of decision variables, we adopted the following method based on the simulated annealing algorithm:
+\begin{itemize}
+	\setlength{\itemsep}{0pt}
+	\setlength{\parsep}{0pt}
+	\setlength{\parskip}{0pt}
+	\item  $\boldsymbol{Step1:}$ $i_d$ Evenly takes 10 discrete values. For each $i_d$, determine the initial solution, cooling function, initial temperature and termination temperature.
+	\item  $\boldsymbol{Step2:}$ For the 10 discrete values in $\boldsymbol{Step1}$, we compare the corresponding optimal function value, namely the total time. According to the results, the interval between the sub-peaks is taken and the $i_d$ is constrained within this range. If the number of contained points is still too much, repeat Step1 within this interval. $\boldsymbol{Step1}$.
+	
+	\item  $\boldsymbol{Step3:}$ Add $i_d$ to the decision variable, and use the SA Algorithm to get the optimal scheme
+\end{itemize}
+
+\section{Discussion}
+\subsection{Strengths and Weaknesses}
+\begin{itemize}
+	\item Our dynamic model closely accords with the actual situation
+\end{itemize}
+\begin{itemize}
+	\item Simulated annealing algorithm cannot guarantee the global optimal solution.
+	\item The parameters of the simulated annealing algorithm need to be adjusted every time different track is optimized.
+	\item The model is highly sensitive to the accuracy of quoted data.
+\end{itemize}
+\subsection{Future Work}
+\begin{itemize}
+	\item  Collect more data to enhance the accuracy and robustness of the model
+	\item  Apply the model to other tracks to test the validity of the model
+\end{itemize}
+
+\section{Guidance}
+
+\begin{letter}{Dear Directeur Sportif: }
+	
+	
+	\vspace{\parskip}
+	
+	
+	This guidance will focus on the result of a sprinter who takes part in 2021 Olympic Time Trial course in Tokyo, Japan.
+	
+	
+	As you know, the cyclist you're in charge of is a typical Sprinter. He has extraordinary short time explosive power, can stand out in short distance sprint competition and easily win.His physical characteristics can be well reflected in the Power Curve compared with the time trial specialist(see Figure 19).
+	
+	\begin{figure}[h]
+		\small
+		\centering
+		\includegraphics[width=10cm]{pp2.jpg}
+		\caption{Power Profiles of Two Cyclists} 
+	\end{figure}
+	
+	However, in the upcoming Olympic Time Trial Course, the complex and rugged terrain and a large number of curves pose a more severe challenge to the reasonable allocation and effective utilization of athletes' physical strength in the long distance riding.
+	
+	The Tokyo Olympic course features significant slopes, which requires athletes to flexibly adjust the power output and take advantage of the downhill acceleration process. If the rider does not plan his power output properly and distributes energy in a haphazard way, the race result will be disappointing for you and your team.
+	
+	Fortunately, our model solves this problem well for you.
+	
+	Our model divides the track into 1,164 equidistant sections. As shown in Figure 20, we have provided you and your rider with a reliable recommended power output for each section. In general, our model recommends that your racer increase power output for speed on the uphill, reduce power for recovery on the downhill, and alternate high and low power on flat surfaces. If followed rigorously as recommended by our model, your runner's performance can improve by as much as 29\%, an effect that is staggering.
+	
+	\begin{figure}[h]
+		\small
+		\centering
+		\includegraphics[width=14cm]{guidance2.jpg}
+		\caption{Power Distribution} 
+	\end{figure}
+	
+	However, athletes' perceptual judgment of their own power output during riding is often inaccurate, which makes it difficult for them to strictly implement our recommended scheme. Therefore, it is necessary to install a sensor system on the bike that can monitor the power output of the rider remotely. You and your team can tell your player,in real time, whether he should increase or decrease his power, using tools such as headphones.
+	
+	Of course, despite the help of sensors, a cyclist who is going through intense anaerobic exercise on a long, long bike ride may still have trouble controlling his power accurately. In the event of inevitable deviations, our model identifies key sections of the track for the Tokyo Olympics. On these critical sections, your rider needs to be extremely strict in implementing our recommended power output, otherwise it may have a significant impact on his race performance.  These key sections include: all steep climbs and sharp turns. Your riders should take extra care when driving through these sections.
+	
+	It is worth mentioning that you and your racer should not worry too much about the wind speed and direction of the day. Our aerodynamics model already takes the wind speed and direction into account, and your racer should simply follow our recommendations as strictly as possible.
+	
+	
+\end{letter}
+
+
+
+\newpage
+
+
+\begin{thebibliography}{99}
+	\bibitem{1}\url{https://olympics.com/olympic-games/tokyo-2020&Topographic Map}
+	\bibitem{2}\url{https://www.flanders2021.com&Topographic Map}
+	\bibitem{3} Vandewalle, H., 2018. Modelling of Running Performances: Comparisons of Power-Law, Hyperbolic, Logarithmic, and Exponential Models in Elite Endurance Runners. BioMed Research International, 2018, pp.1-23, \url{https://doi.org/10.1155/2018/8203062}
+	\bibitem{4} Debraux, P., Grappe, F., Manolova, A.V. and Bertucci, W. (2011). Aerodynamic drag in cycling: methods of assessment. Sports Biomechanics, 10(3), pp.197–218, \url{https://doi.org/10.1080/14763141.2011.592209}
+	\bibitem{5}M ARTIN, J.C., GARDNER, A.S., BARRAS, M. and MARTIN, D.T. (2006). Modeling Sprint Cycling Using Field-Derived Parameters and Forward Integration. Medicine \& Science in Sports \& Exercise, 38(3), pp.592–597.
+	\url{https://journals.lww.com/acsm-msse/Fulltext/2006/03000/Modeling_Sprint_Cycling_Using_Field_Derived.27.aspx}
+	\bibitem{6}Blocken, B., van Druenen, T., Toparlar, Y., Malizia, F., Mannion, P., Andrianne, T., Marchal, T., Maas, G.-J. and Diepens, J. (2018). Aerodynamic drag in cycling pelotons: New insights by CFD simulation and wind tunnel testing. Journal of Wind Engineering and Industrial Aerodynamics, [online] 179, pp.319–337. 
+	\url{https://www.sciencedirect.com/science/article/pii/S0167610518303751?via%3Dihub}
+	\bibitem{7}Pinot, J. and Grappe, F. (2011). The Record Power Profile to Assess Performance in Elite Cyclists. International Journal of Sports Medicine, 32(11), pp.839–844.
+	\url{http://www.thieme-connect.de/DOI/DOI?10.1055/s-0031-1279773}
+	\bibitem{8}Peronnet, F. and Thibault, G. (1989). Mathematical analysis of running performance and world running records. Journal of Applied Physiology, 67(1), pp.453–465.
+	\url{https://journals.physiology.org/doi/abs/10.1152/jappl.1989.67.1.453}
+	\bibitem{9}Pinot, J. and Grappe, F. (2011a). The Peronnet–Thibault mathematical model applied to the record power profile in cycling. Computer Methods in Biomechanics and Biomedical Engineering, 14(sup1), pp.219–220.
+	\url{https://www.tandfonline.com/doi/full/10.1080/10255842.2011.595193}
+	\bibitem{10}Vanhatalo, A., Jones, A.M. and Burnley, M. (2011). Application of Critical Power in Sport. International Journal of Sports Physiology and Performance, 6(1), pp.128–136.
+	\url{https://www.semanticscholar.org/paper/Application-of-critical-power-in-sport.-Vanhatalo-Jones/5e2e9ff0e9fbca806d40a316a7084f0983ac205a}
+	\bibitem{11}Pinot, J. and Grappe, F. (2010). The “Power Profile” for determining the physical capacities of a cyclist. Computer Methods in Biomechanics and Biomedical Engineering, 13(sup1), pp.103–104.
+	\url{https://www.tandfonline.com/doi/full/10.1080/10255842.2010.495580}
+	\bibitem{12}Millet, G.P., Tronche, C. and Grappe, F. (2014). Accuracy of Indirect Estimation of Power Output From Uphill Performance in Cycling. International Journal of Sports Physiology and Performance, 9(5), pp.777–782.
+	\url{https://pubmed.ncbi.nlm.nih.gov/24306321/}
+	\bibitem{13}Morton, R.H. and Billat, L.V. (2004). The critical power model for intermittent exercise. European Journal of Applied Physiology, 91(2-3), pp.303–307.
+	\url{https://link.springer.com/article/10.1007/s00421-003-0987-z}
+	\bibitem{14}Blocken, B., Toparlar, Y., van Druenen, T. and Andrianne, T. (2018a). Aerodynamic drag in cycling team time trials. Journal of Wind Engineering and Industrial Aerodynamics, [online] 182, pp.128–145.
+	\url{https://www.sciencedirect.com/science/article/pii/S0167610518306755}
+	
+\end{thebibliography}
+
+
+
+
+
+
+
+
+
+
+
+%\begin{appendices}
+
+%\section{First appendix}
+
+%\end{appendices}
+\end{document}
+%%
+%% This work consists of these files mcmthesis.dtx,
+%%                                   figures/ and
+%%                                   code/,
+%% and the derived files             mcmthesis.cls,
+%%                                   mcmthesis-demo.tex,
+%%                                   README,
+%%                                   LICENSE,
+%%                                   mcmthesis.pdf and
+%%                                   mcmthesis-demo.pdf.
+%%
+%% End of file `mcmthesis-demo.tex'.
